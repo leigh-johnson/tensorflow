@@ -36,7 +36,7 @@ set -e
 
 export TF_ENABLE_XLA=0
 
-yes '' | ./configure
+yes '' | ${WORKSPACE}/${CI_TENSORFLOW_SUBMODULE_PATH}/configure
 
 # Fix for curl build problem in 32-bit, see https://stackoverflow.com/questions/35181744/size-of-array-curl-rule-01-is-negative
 sudo sed -i 's/define CURL_SIZEOF_LONG 8/define CURL_SIZEOF_LONG 4/g' /usr/include/curl/curlbuild.h
@@ -48,7 +48,7 @@ if [ -d /usr/include/openssl ]; then
   sudo mv /usr/include/openssl /usr/include/openssl.original
 fi
 
-WORKSPACE_PATH=`pwd`
+WORKSPACE_PATH=${WORKSPACE}/${CI_TENSORFLOW_SUBMODULE_PATH}
 
 # Build the OpenBLAS library, which is faster than Eigen on the Pi Zero/One.
 # TODO(petewarden) - It would be nicer to move this into the main Bazel build
@@ -81,14 +81,14 @@ if [[ $1 == "PI_ONE" ]]; then
   PI_COPTS="--copt=-march=armv6 --copt=-mfpu=vfp
   --copt=-DUSE_GEMM_FOR_CONV --copt=-DUSE_OPENBLAS
   --copt=-isystem --copt=${OPENBLAS_INSTALL_PATH}/include/
-  --copt=-std=gnu11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
+  --copt=-std=c++11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
   --linkopt=-L${OPENBLAS_INSTALL_PATH}/lib/
   --linkopt=-l:libopenblas.a"
   echo "Building for the Pi One/Zero, with no NEON support"
   WHEEL_ARCH=linux_armv6l
 else
   PI_COPTS='--copt=-march=armv7-a --copt=-mfpu=neon-vfpv4
-  --copt=-std=gnu11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
+  --copt=-std=c++11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
   --copt=-O3 --copt=-fno-tree-pre
   --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
   --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
