@@ -50,34 +50,33 @@ fi
 
 WORKSPACE_PATH=`pwd`
 
-# Build the OpenBLAS library, which is faster than Eigen on the Pi Zero/One.
-# TODO(petewarden) - It would be nicer to move this into the main Bazel build
-# process if we can maintain a build file for this.
 TOOLCHAIN_INSTALL_PATH=/tmp/toolchain_install/
 sudo rm -rf ${TOOLCHAIN_INSTALL_PATH}
 mkdir ${TOOLCHAIN_INSTALL_PATH}
 cd ${TOOLCHAIN_INSTALL_PATH}
-curl -L https://github.com/raspberrypi/tools/archive/0e906ebc527eab1cdbf7adabff5b474da9562e9f.tar.gz -o toolchain.tar.gz
+curl -L  https://github.com/raspberrypi/tools/archive/5caa7046982f0539cf5380f94da04b31129ed521.tar.gz -o toolchain.tar.gz
 tar xzf toolchain.tar.gz
-mv tools-0e906ebc527eab1cdbf7adabff5b474da9562e9f/ tools
+mv tools-5caa7046982f0539cf5380f94da04b31129ed521/ tools
 
-CROSSTOOL_CC=${TOOLCHAIN_INSTALL_PATH}/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
-
-OPENBLAS_SRC_PATH=/tmp/openblas_src/
-sudo rm -rf ${OPENBLAS_SRC_PATH}
-git clone https://github.com/xianyi/OpenBLAS ${OPENBLAS_SRC_PATH}
-cd ${OPENBLAS_SRC_PATH}
-# The commit after this introduced Fortran compile issues. In theory they should
-# be solvable using NOFORTRAN=1 on the make command, but my initial tries didn't
-# work, so pinning to the last know good version.
-git checkout 5a6a2bed9aff0ba8a18651d5514d029c8cae336a
-# If this path is changed, you'll also need to update
-# cxx_builtin_include_directory in third_party/toolchains/cpus/arm/CROSSTOOL.tpl
-OPENBLAS_INSTALL_PATH=/tmp/openblas_install/
-make CC=${CROSSTOOL_CC} FC=${CROSSTOOL_CC} HOSTCC=gcc TARGET=ARMV6
-make PREFIX=${OPENBLAS_INSTALL_PATH} install
+CROSSTOOL_CC=${TOOLCHAIN_INSTALL_PATH}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
 
 if [[ $1 == "PI_ONE" ]]; then
+  # Build the OpenBLAS library, which is faster than Eigen on the Pi Zero/One.
+  # TODO(petewarden) - It would be nicer to move this into the main Bazel build
+  # process if we can maintain a build file for this.
+  OPENBLAS_SRC_PATH=/tmp/openblas_src/
+  sudo rm -rf ${OPENBLAS_SRC_PATH}
+  git clone https://github.com/xianyi/OpenBLAS ${OPENBLAS_SRC_PATH}
+  cd ${OPENBLAS_SRC_PATH}
+  # The commit after this introduced Fortran compile issues. In theory they should
+  # be solvable using NOFORTRAN=1 on the make command, but my initial tries didn't
+  # work, so pinning to the last know good version.
+  git checkout 5a6a2bed9aff0ba8a18651d5514d029c8cae336a
+  # If this path is changed, you'll also need to update
+  # cxx_builtin_include_directory in third_party/toolchains/cpus/arm/CROSSTOOL.tpl
+  OPENBLAS_INSTALL_PATH=/tmp/openblas_install/
+  make CC=${CROSSTOOL_CC} FC=${CROSSTOOL_CC} HOSTCC=gcc TARGET=ARMV6
+  make PREFIX=${OPENBLAS_INSTALL_PATH} install
   PI_COPTS="--copt=-march=armv6 --copt=-mfpu=vfp
   --copt=-DUSE_GEMM_FOR_CONV --copt=-DUSE_OPENBLAS
   --copt=-isystem --copt=${OPENBLAS_INSTALL_PATH}/include/
@@ -105,10 +104,11 @@ cd ${WORKSPACE_PATH}
 bazel build -c opt ${PI_COPTS} \
   --config=monolithic \
   --copt=-funsafe-math-optimizations --copt=-ftree-vectorize \
-  --copt=-fomit-frame-pointer --cpu=armeabi \
+  --copt=-fomit-frame-pointer --cpu=armv7l \
   --crosstool_top=@local_config_arm_compiler//:toolchain \
   --define tensorflow_mkldnn_contraction_kernel=0 \
   --verbose_failures \
+  --platform @bazel_tools//platforms:arm
   //tensorflow:libtensorflow.so \
   //tensorflow:libtensorflow_framework.so \
   //tensorflow/tools/benchmark:benchmark_model \

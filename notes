@@ -1,0 +1,47 @@
+1. First build, ubuntu 16.04
+
+ERROR: /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/com_google_absl/absl/debugging/BUILD.bazel:135:1: C++ compilation of rule '@com_google_absl//absl/debugging:debugging_internal' failed (Exit 1): arm-linux-gnueabihf-gcc failed: error executing command
+  (cd /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/execroot/org_tensorflow && \
+  exec env - \
+    LD_LIBRARY_PATH='' \
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin \
+    PWD=/proc/self/cwd \
+    PYTHON_BIN_PATH=/usr/bin/python3 \
+    PYTHON_LIB_PATH=/usr/lib/python3/dist-packages \
+    TF_CONFIGURE_IOS=0 \
+  /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/arm-linux-gnueabihf-gcc -U_FORTIFY_SOURCE '-D_FORTIFY_SOURCE=1' -fstack-protector -DRASPBERRY_PI -g0 -O2 -DNDEBUG -ffunction-sections -fdata-sections '-std=c++11' -isystem /usr/include/arm-linux-gnueabihf -isystem /usr/include/python3.6 -isystem /usr/include/ -MD -MF bazel-out/armeabi-opt/bin/external/com_google_absl/absl/debugging/_objs/debugging_internal/vdso_support.pic.d '-frandom-seed=bazel-out/armeabi-opt/bin/external/com_google_absl/absl/debugging/_objs/debugging_internal/vdso_support.pic.o' -fPIC -D__CLANG_SUPPORT_DYN_ANNOTATION__ -iquote external/com_google_absl -iquote bazel-out/armeabi-opt/genfiles/external/com_google_absl -iquote bazel-out/armeabi-opt/bin/external/com_google_absl '-march=armv7-a' '-mfpu=neon-vfpv4' '-std=gnu11' '-DS_IREAD=S_IRUSR' '-DS_IWRITE=S_IWUSR' -O3 -fno-tree-pre -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -funsafe-math-optimizations -ftree-vectorize -fomit-frame-pointer -Wall -Wextra -Wcast-qual -Wconversion-null -Wmissing-declarations -Woverlength-strings -Wpointer-arith -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -Wno-missing-field-initializers -Wno-sign-compare -Wno-builtin-macro-redefined '-D__DATE__="redacted"' '-D__TIMESTAMP__="redacted"' '-D__TIME__="redacted"' -no-canonical-prefixes -fno-canonical-system-headers -c external/com_google_absl/absl/debugging/internal/vdso_support.cc -o bazel-out/armeabi-opt/bin/external/com_google_absl/absl/debugging/_objs/debugging_internal/vdso_support.pic.o)
+Execution platform: @bazel_tools//platforms:host_platform
+cc1plus: warning: command line option '-std=gnu11' is valid for C/ObjC but not for C++
+In file included from /usr/include/link.h:24:0,
+                 from external/com_google_absl/absl/debugging/internal/elf_mem_image.h:39,
+                 from external/com_google_absl/absl/debugging/internal/vdso_support.h:45,
+                 from external/com_google_absl/absl/debugging/internal/vdso_support.cc:19:
+/usr/include/elf.h:1001:23: fatal error: bits/auxv.h: No such file or directory
+ #include <bits/auxv.h>
+                       ^
+compilation terminated.
+INFO: Elapsed time: 902.408s, Critical Path: 10.96s
+INFO: 213 processes: 213 local.
+FAILED: Build did NOT complete successfully
+FAILED: Build did NOT complete successfully
+
+ERROR: /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/com_google_absl/absl/hash/BUILD.bazel:96:1: C++ compilation of rule '@com_google_absl//absl/hash:city' failed (Exit 1): arm-linux-gnueabihf-gcc failed: error executing command
+  (cd /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/execroot/org_tensorflow && \
+  exec env - \
+    LD_LIBRARY_PATH='' \
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin \
+    PWD=/proc/self/cwd \
+    PYTHON_BIN_PATH=/usr/bin/python3 \
+    PYTHON_LIB_PATH=/usr/lib/python3/dist-packages \
+    TF_CONFIGURE_IOS=0 \
+  /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/arm-linux-gnueabihf-gcc -U_FORTIFY_SOURCE '-D_FORTIFY_SOURCE=1' -fstack-protector -DRASPBERRY_PI -g0 -O2 -DNDEBUG -ffunction-sections -fdata-sections '-std=c++11' -isystem /usr/include/arm-linux-gnueabihf -isystem /usr/include/python3.5 -isystem /usr/include/ -MD -MF bazel-out/armeabi-opt/bin/external/com_google_absl/absl/hash/_objs/city/city.pic.d '-frandom-seed=bazel-out/armeabi-opt/bin/external/com_google_absl/absl/hash/_objs/city/city.pic.o' -fPIC -iquote external/com_google_absl -iquote bazel-out/armeabi-opt/genfiles/external/com_google_absl -iquote bazel-out/armeabi-opt/bin/external/com_google_absl '-march=armv7-a' '-mfpu=neon-vfpv4' '-std=c++11' '-DS_IREAD=S_IRUSR' '-DS_IWRITE=S_IWUSR' -O3 -fno-tree-pre -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 -U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 -funsafe-math-optimizations -ftree-vectorize -fomit-frame-pointer -Wall -Wextra -Wcast-qual -Wconversion-null -Wmissing-declarations -Woverlength-strings -Wpointer-arith -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -Wno-missing-field-initializers -Wno-sign-compare -Wno-builtin-macro-redefined '-D__DATE__="redacted"' '-D__TIMESTAMP__="redacted"' '-D__TIME__="redacted"' -no-canonical-prefixes -fno-canonical-system-headers -c external/com_google_absl/absl/hash/internal/city.cc -o bazel-out/armeabi-opt/bin/external/com_google_absl/absl/hash/_objs/city/city.pic.o)
+Execution platform: @bazel_tools//platforms:host_platform
+In file included from /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/cmath:44:0,
+                 from /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/random:38,
+                 from /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/bits/stl_algo.h:66,
+                 from /Users/leigh/projects/tensorflow/bazel-ci_build-cache/.cache/bazel/_bazel_leigh/eab0d61a99b6696edb3d2aff87b585e8/external/arm_compiler/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/include/c++/4.9.3/algorithm:62,
+                 from external/com_google_absl/absl/hash/internal/city.cc:25:
+/usr/include/math.h:31:30: fatal error: bits/math-vector.h: No such file or directory
+ #include <bits/math-vector.h>
+
+ Installing glibc
