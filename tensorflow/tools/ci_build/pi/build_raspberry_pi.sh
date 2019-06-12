@@ -39,8 +39,8 @@ export TF_ENABLE_XLA=0
 yes '' | ./configure
 
 # Fix for curl build problem in 32-bit, see https://stackoverflow.com/questions/35181744/size-of-array-curl-rule-01-is-negative
-sudo sed -i 's/define CURL_SIZEOF_LONG 8/define CURL_SIZEOF_LONG 4/g' /usr/include/curl/curlbuild.h
-sudo sed -i 's/define CURL_SIZEOF_CURL_OFF_T 8/define CURL_SIZEOF_CURL_OFF_T 4/g' /usr/include/curl/curlbuild.h
+# sudo sed -i 's/define CURL_SIZEOF_LONG 8/define CURL_SIZEOF_LONG 4/g' /usr/include/curl/curlbuild.h
+# sudo sed -i 's/define CURL_SIZEOF_CURL_OFF_T 8/define CURL_SIZEOF_CURL_OFF_T 4/g' /usr/include/curl/curlbuild.h
 
 # The system-installed OpenSSL headers get pulled in by the latest BoringSSL
 # release on this configuration, so move them before we build:
@@ -50,15 +50,24 @@ fi
 
 WORKSPACE_PATH=`pwd`
 
-TOOLCHAIN_INSTALL_PATH=/tmp/toolchain_install/
-sudo rm -rf ${TOOLCHAIN_INSTALL_PATH}
-mkdir ${TOOLCHAIN_INSTALL_PATH}
-cd ${TOOLCHAIN_INSTALL_PATH}
-curl -L  https://github.com/raspberrypi/tools/archive/5caa7046982f0539cf5380f94da04b31129ed521.tar.gz -o toolchain.tar.gz
-tar xzf toolchain.tar.gz
-mv tools-5caa7046982f0539cf5380f94da04b31129ed521/ tools
+# TOOLCHAIN_INSTALL_PATH=/tmp/toolchain_install/
+# sudo rm -rf ${TOOLCHAIN_INSTALL_PATH}
+# mkdir ${TOOLCHAIN_INSTALL_PATH}
+# cd ${TOOLCHAIN_INSTALL_PATH}
+# curl -L  https://github.com/raspberrypi/tools/archive/5caa7046982f0539cf5380f94da04b31129ed521.tar.gz -o toolchain.tar.gz
+# tar xzf toolchain.tar.gz
+# mv tools-5caa7046982f0539cf5380f94da04b31129ed521/ tools
 
-CROSSTOOL_CC=${TOOLCHAIN_INSTALL_PATH}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
+# TOOLCHAIN_INSTALL_PATH=/tmp/toolchain_install/
+# sudo rm -rf ${TOOLCHAIN_INSTALL_PATH}
+# mkdir ${TOOLCHAIN_INSTALL_PATH}
+# cd ${TOOLCHAIN_INSTALL_PATH}
+# curl -L https://sourceforge.net/projects/raspberry-pi-cross-compilers/files/Raspberry%20Pi%20GCC%20Cross-Compiler%20Toolchains/GCC%208.3.0/Raspberry%20Pi%202%2C%203/cross-gcc-8.3.0-pi_2-3.tar.gz -o cross-gcc-8.3.0-pi_2-3.tar.gz
+# tar xzf cross-gcc-8.3.0-pi_2-3.tar.gz
+# mv cross-gcc-8.3.0-pi_2-3/ tools
+
+# CROSSTOOL_CC=${TOOLCHAIN_INSTALL_PATH}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-g++
+CROSSTOOL_CC=${TOOLCHAIN_INSTALL_PATH}/tools/cross-pi-gcc-8.3.0-1/bin/arm-linux-gnueabihf-g++
 
 if [[ $1 == "PI_ONE" ]]; then
   # Build the OpenBLAS library, which is faster than Eigen on the Pi Zero/One.
@@ -86,8 +95,9 @@ if [[ $1 == "PI_ONE" ]]; then
   echo "Building for the Pi One/Zero, with no NEON support"
   WHEEL_ARCH=linux_armv6l
 else
-  PI_COPTS='--copt=-march=armv7-a --copt=-mfpu=neon-vfpv4
-  --copt=-std=gnu11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
+  PI_COPTS='--copt=-march=armv7-a 
+  --copt=-mfpu=neon-vfpv4
+  --copt=-std=c++11 --copt=-DS_IREAD=S_IRUSR --copt=-DS_IWRITE=S_IWUSR
   --copt=-O3 --copt=-fno-tree-pre
   --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
   --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
@@ -100,15 +110,22 @@ fi
 # include path for Python 3.x builds to work.
 export CROSSTOOL_PYTHON_INCLUDE_PATH
 
+export CC=${CROSSTOOL_CC}
+
 cd ${WORKSPACE_PATH}
 bazel build -c opt ${PI_COPTS} \
+  --config=noaws \
+  --config=nogcp \
+  --config=nohdfs \
+  --config=noignite \
+  --config=nokafka \
+  --config=nonccl \
   --config=monolithic \
   --copt=-funsafe-math-optimizations --copt=-ftree-vectorize \
-  --copt=-fomit-frame-pointer --cpu=armv7l \
+  --copt=-fomit-frame-pointer --cpu=arm \
   --crosstool_top=@local_config_arm_compiler//:toolchain \
   --define tensorflow_mkldnn_contraction_kernel=0 \
   --verbose_failures \
-  --platform @bazel_tools//platforms:arm
   //tensorflow:libtensorflow.so \
   //tensorflow:libtensorflow_framework.so \
   //tensorflow/tools/benchmark:benchmark_model \
