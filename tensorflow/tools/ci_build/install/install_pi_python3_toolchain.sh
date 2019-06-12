@@ -22,4 +22,4 @@ echo 'deb [arch=armhf] http://ports.ubuntu.com/ trusty-backports main restricted
 sed -i 's#deb http://archive.ubuntu.com/ubuntu/#deb [arch=amd64] http://archive.ubuntu.com/ubuntu/#g' /etc/apt/sources.list
 apt-get update
 apt-get install -y libpython3-all-dev:armhf
-apt-get install -y python3 python3-numpy python3-dev python3-pip g++-multilib
+apt-get install -y python3 python3-numpy python3-dev python3-pip g++-multilib build-essential gawk gcc g++ gfortran git texinfo bison libncurses-dev
