@@ -21,3 +21,11 @@ RUN /install/install_pi_python3_toolchain.sh
 
 # Set up the master bazelrc configuration file.
 COPY install/.bazelrc /etc/bazel.bazelrc
+
+
+RUN mkdir -p /tmp/toolchain_install/
+RUN mkdir -p /tools
+RUN curl -L https://sourceforge.net/projects/raspberry-pi-cross-compilers/files/Raspberry%20Pi%20GCC%20Cross-Compiler%20Toolchains/GCC%208.3.0/Raspberry%20Pi%202%2C%203/cross-gcc-8.3.0-pi_2-3.tar.gz -o /tmp/toolchain_install/cross-gcc-8.3.0-pi_2-3.tar.gz
+RUN apt-get install -y --no-install-recommends bsdtar
+RUN bsdtar -xzf /tmp/toolchain_install/cross-gcc-8.3.0-pi_2-3.tar.gz -C /tools/ && rm -rf /tmp/toolchain_install
+RUN ls -ah /tools/
